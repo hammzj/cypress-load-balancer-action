@@ -1,0 +1,95 @@
+name: Cypress Load Balancer - Merge spec map files
+description: |
+  Merges collected spec maps that have been uploaded from parallelized Cypress test jobs 
+  and merges them back to the main spec-map file on the branch.
+  It then uploads it as an artifact as well.
+
+  Use this action in a new job that needs all completed parallel jobs that run Cypress tests
+  and have uploaded temporary spec files.
+
+inputs:
+  cache-primary-key:
+    description: |
+      The exact cache key to use for saving the load balancer map. Can be customized to fit your use cases.
+      The default attempts to find one on the current branch, or the head_ref if running tests on a pull request.
+    default: cypress-load-balancer-map-${{ github.head_ref || github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+  cache-restore-keys:
+    description: |
+      The cache restore keys to use when restoring the load balancer map from parallelized jobs that run Cypress.
+      Can be customized as a multi-line string to fit your use cases.
+      The default attempts to look on the current branch; 
+      if running tests on a pull request, it instead attempts to look at the head ref (source branch), 
+      and if not found, checks the base branch ref (target branch).
+    # Restore keys:
+    ## 1. Same key from previous workflow run
+    ## 2. Key from pull request base branch most recent workflow
+    default: |
+      cypress-load-balancer-map-${{github.head_ref || github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+      cypress-load-balancer-map-${{github.head_ref || github.ref_name }}-${{ github.run_id }}-
+      cypress-load-balancer-map-${{github.head_ref || github.ref_name }}-
+      cypress-load-balancer-map-${{ github.base_ref }}-
+    required: true
+    spec-map-artifacts:
+      description: These are the saved spec-maps from parallelized Cypress jobs. Created with the "cypress-load-balancer/save-temporary-spec-map" action.
+      default: "*-cypress-load-balancer-temp-spec-map-from-parallel-job"
+
+outputs:
+  cypressLoadBalancerSpecs:
+    description: A list of Cypress specs balanced out per runner
+    value: ${{ steps.cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.18.x
+
+    - name: Get cached load-balancing map
+      id: cache-restore-load-balancing-map
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: false
+        path: .cypress_load_balancer/spec-map.json
+        key: ${{ inputs.cache-primary-key }}
+        restore-keys: ${{ inputs.cache-restore-keys }}
+
+    - name: If no map exists for either the base branch or the current branch, then initialize one
+      id: initialize-map
+      run: npx cypress-load-balancer initialize
+      if: ${{ hashFiles('.cypress_load_balancer/spec-map.json') == '' }}
+      shell: bash
+
+    - name: Download temp maps
+      uses: actions/download-artifact@v4
+      with:
+        pattern: "*-cypress-load-balancer-temp-spec-map-from-parallel-job"
+        path: ./cypress_load_balancer/temp
+        merge-multiple: false
+
+    - name: Merge files
+      run: npx cypress-load-balancer merge -G "./cypress_load_balancer/temp/**/spec-map.json"
+      shell: bash
+
+    - name: Save overwritten cached load-balancing map to current/head branch
+      id: cache-save-load-balancing-map
+      uses: actions/cache/save@v4
+      with:
+        key: ${{ inputs.cache-primary-key }}
+        path: .cypress_load_balancer/spec-map.json
+
+    # This is to get around the issue of not being able to access cache on the base_ref for a PR.
+    # We can use this to download it in another workflow run: https://github.com/dawidd6/action-download-artifact
+    # That way, we can merge the source (head) branch's load balancer map to the target (base) branch.
+    - name: Upload main load balancer map
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: cypress-load-balancer-map
+        path: .cypress_load_balancer/spec-map.json
+
+    - name: "Read merged spec-map.json file"
+      run: cat .cypress_load_balancer/spec-map.json
+      shell: bash

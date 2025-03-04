@@ -1,0 +1,76 @@
+name: Cypress Load Balancer - Balance
+description: Performs load balancing against Cypress tests
+
+inputs:
+  runners:
+    required: true
+    description: The count of runners to use for load balancing
+  testing-type:
+    required: true
+    description: |
+      The Cypress testing type against which to perform load balancing.
+      Choices: "e2e" or "component"
+  format:
+    required: false
+    description: |
+      An alternate format to use for formatting. For GitHub Actions, this should be required.
+
+      Choices: 
+      - "string": `"{filename1},{filename2}"` per runner (Prefer this as a "spec" input if using "cypress-io/github-action")
+      - "newline": `"{filename1}\n{filename2}"` per runner
+      - "spec": `"--spec {filename1},{filename2}"` per runner
+  file-paths:
+    required: false
+    description: |
+      A multi-line string or comma delimited list of files against which to perform load balancing. If not given, the Cypress configuration will be used instead
+  cache-primary-key:
+    description: |
+      The exact cache key to use for saving the load balancer map. Can be customized to fit your use cases.
+      The default attempts to find one on the current branch, or the head_ref if running tests on a pull request.
+    default: cypress-load-balancer-map-${{ github.head_ref || github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
+  cache-restore-keys:
+    description: |
+      The cache restore keys to use when restoring the load balancer map.
+      Can be customized as a multi-line string to fit your use cases.
+      The default attempts to look on the current branch; 
+      if running tests on a pull request, it instead attempts to look at the head ref (source branch), 
+      and if not found, checks the base branch ref (target branch).
+    # Default Restore keys:
+    ## 1. Same key from previous workflow run
+    ## 2. Key from pull request base branch most recent workflow. Used for the "base" map, if one exists
+    default: |
+      cypress-load-balancer-map-${{github.head_ref || github.ref_name }}-
+      cypress-load-balancer-map-${{ github.base_ref }}-
+    required: true
+
+outputs:
+  cypressLoadBalancerSpecs:
+    description: A list of Cypress specs balanced out per runner
+    value: ${{ steps.cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.18.x
+
+    - name: Restore cached load balancing map
+      id: cache-restore-load-balancing-map
+      uses: actions/cache/restore@v4
+      with:
+        fail-on-cache-miss: false
+        path: .cypress_load_balancer/spec-map.json
+        key: ${{ inputs.cache-primary-key }}
+        restore-keys: ${{ inputs.cache-restore-keys }}
+
+    - name: Perform load balancing for ${{ inputs.testing-type }} tests
+      id: cypress-load-balancer
+      run: node ./dist/src/balance.js
+      shell: bash
+      with:
+        runners: ${{ inputs.runners }}
+        testing-type: ${{ inputs.testing-type }}
+        format: ${{inputs.format}}

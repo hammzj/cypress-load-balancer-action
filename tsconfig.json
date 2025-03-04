@@ -6,6 +6,7 @@
     "rootDir": "./",
     "outDir": "./dist",
     "noEmit": false,
+    "noEmitOnError": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "baseUrl": "./",
@@ -26,5 +27,5 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
-  "include": ["index.ts"]
+  "include": ["src/**/*.ts"]
 }
