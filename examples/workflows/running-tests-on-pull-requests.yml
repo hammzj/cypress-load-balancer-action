@@ -1,0 +1,61 @@
+name: "Example - Load Balancing e2e Cypress Tests on Pull Requests"
+
+on:
+  pull_request:
+
+env:
+  runners: ${{ env.CYPRESS_LOAD_BALANCER_RUNNERS || 3 }}
+  testing-type: ${{ inputs.testing-type || 'e2e' }}
+
+jobs:
+  load_balance:
+    runs-on: ubuntu-22.04
+    outputs:
+      cypressLoadBalancerSpecs: ${{ steps.e2e-cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.x
+
+      - name: Perform load balancing
+        uses: ./actions/balance
+        with:
+          runners: ${{ env.runners }}
+          testing-type: ${{ env.testing-type }}
+          format: string
+
+  run_tests:
+    runs-on: ubuntu-22.04
+    needs: [load_balance]
+    strategy:
+      fail-fast: false
+      matrix:
+        cypressLoadBalancerSpecs: ${{ fromJson(needs.get_specs.outputs.cypressLoadBalancerSpecs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cypress run tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: electron
+          build: npm run build
+          spec: ${{ matrix.cypressLoadBalancerSpecs }}
+          component: ${{ env.testing-type == 'component' }}
+          # Fix for https://github.com/cypress-io/github-action/issues/480
+          config: videosFolder=/tmp/cypress-videos
+
+      - name: Upload artifact for temporary spec map results
+        uses: ./actions/save-temporary-spec-map
+
+  merge_and_upload_spec_map:
+    runs-on: ubuntu-22.04
+    needs: [run_tests]
+    steps:
+      - name: Merge and upload temporary spec maps to cached spec map on head (source) branch
+        uses: /actions/merge

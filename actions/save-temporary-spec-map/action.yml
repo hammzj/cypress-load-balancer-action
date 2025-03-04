@@ -1,0 +1,31 @@
+name: Cypress Load Balancer - Save temporary spec map after Cypress test run
+description: |
+  After a Cypress test job runs, this action is used to save a temporary spec map file that can
+  be merged back to a base load balancing map with new results, which can be used on next load balancing.
+
+  If using in a job that runs tests, this action should be run regardless if tests failed.
+
+  Usage:
+  After your Cypress tests are completed in a job, add this action.
+  The "cypress-load-balancer" plugin must be installed in your Cypress project.
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20.18.x
+
+    - name: Generate uuid to use uploading a unique load balancer map artifact
+      id: generate-uuid
+      run: echo uuid="$(uuidgen)" >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Upload temp load balancer map
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{steps.generate-uuid.outputs.uuid }}-cypress-load-balancer-map-temp-from-parallel-job
+        path: .cypress_load_balancer/spec-map.json

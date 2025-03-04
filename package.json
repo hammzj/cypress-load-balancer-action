@@ -1,0 +1,47 @@
+{
+  "name": "cypress-load-balancer-action",
+  "version": "1.0.0",
+  "description": "A multi-purpose GitHub Action for running the cypress-load-balancer script.",
+  "main": "index.js",
+  "repository": "https://github.com/hammzj/cypress-load-balancer-action.git",
+  "author": "Zachary Hamm <zjhamm304@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "tsc",
+    "build:test": "tsc -p tsconfig.test.json",
+    "dev:check": "tsc -p tsconfig.json --noEmit",
+    "dev:check:tests": "tsc -p tsconfig.test.json --noEmit",
+    "dev:format": "prettier --write . && prettier --write \"./actions/**/*.yml\"",
+    "dev:lint": "eslint . && prettier --check . && prettier --check \"./actions/**/*.yml\"",
+    "test:mocha": "mocha"
+  },
+  "dependencies": {
+    "@actions/cache": "^4.0.2",
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "cypress-load-balancer": "^0.0.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.21.0",
+    "@types/chai": "^5.0.1",
+    "@types/chai-string": "^1.4.5",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.9",
+    "@types/sinon": "^17.0.4",
+    "@types/sinon-chai": "^4.0.0",
+    "chai": "^5.2.0",
+    "chai-string": "^2.0.0",
+    "eslint": "^9.21.0",
+    "eslint-config-mocha": "^0.0.0",
+    "eslint-config-prettier": "^10.0.2",
+    "eslint-plugin-mocha": "^10.5.0",
+    "globals": "^16.0.0",
+    "mocha": "^11.1.0",
+    "prettier": "^3.5.3",
+    "sinon": "^19.0.2",
+    "sinon-chai": "^4.0.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.0"
+  }
+}

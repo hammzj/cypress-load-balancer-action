@@ -1,0 +1,61 @@
+name: Cypress Load Balancer - Overwrite spec map on base branch during pull request merge
+
+description: |
+  This action should be used in a workflow that only runs when a pull request has been merged.
+  It merges the base branch's spec map file to the newest spec map file uploaded from a workflow that runs Cyrpess tests on pull request.
+
+inputs:
+  cross-workflow-file:
+    description: |
+      This is the GitHub Actions workflow file that runs tests on pull requests and contains the newest spec map.
+      It is required in order to find the spec-map to cache on the base branch.
+    required: true
+  cache-primary-key:
+    description: The cache key to save the `.cypress_load_balancer/spec-map.json` artifact.
+    required: true
+    default: cypress-load-balancer-map-${{ github.base_ref }}-${{ github.run_id }}-${{ github.run_attempt }}
+  cache-restore-keys:
+    description: The cache key to restore an earlier the `.cypress_load_balancer/spec-map.json` artifact to which to merge results from the temporary map uploaded to the test workflow.
+    required: true
+    default: |
+      cypress-load-balancer-map-${{ github.base_ref }}-
+
+runs:
+  using: composite
+  steps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.x
+
+      - name: Download load-balancing map from head branch using "cross-workflow" tooling
+        id: download-load-balancing-map-head-branch
+        uses: dawidd6/action-download-artifact@v8
+        with:
+          workflow: cypress-parallel.yml
+          # Optional, will get head commit SHA
+          pr: ${{ github.event.pull_request.number }}
+          name: cypress-load-balancer-map
+          path: .cypress_load_balancer
+
+      - name: Restore cached load-balancing map on base branch
+        id: cache-restore-load-balancing-map-base-branch
+        uses: actions/cache/restore@v4
+        with:
+          fail-on-cache-miss: false
+          path: /temp/.cypress_load_balancer/spec-map.json
+          key: ${{ inputs.cache-primary-key }}
+          restore-keys: |
+            ${{ inputs.cache-restore-keys }}
+
+      - name: Merge files
+        run: npx cypress-load-balancer merge -G "./temp/.cypress_load_balancer/spec-map.json"
+
+      - name: Save merged load-balancing map
+        uses: actions/cache/save@v4
+        with:
+          path: .cypress_load_balancer/spec-map.json
+          key: ${{ inputs.cache-primary-key }}

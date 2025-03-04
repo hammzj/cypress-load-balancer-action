@@ -1,0 +1,71 @@
+name: "Example - Load Balancing Cypress Tests on manual run"
+
+on:
+  workflow_dispatch:
+    inputs:
+      runners:
+        description: "The number of runners to use for load balancing"
+        type: number
+        required: true
+        default: 1
+      testing-type:
+        description: Cypress testing type
+        choices: [e2e, component]
+        required: true
+      node-version:
+        description: Version of node to use
+        default: ${{ env.node-version }}
+        required: true
+
+jobs:
+  load_balance:
+    runs-on: ubuntu-22.04
+    outputs:
+      cypressLoadBalancerSpecs: ${{ steps.e2e-cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.18.x
+
+      - name: Perform load balancing
+        uses: ./actions/balance
+        with:
+          runners: ${{ inputs.runners }}
+          testing-type: ${{ inputs.testing-type }}
+          format: string
+
+  run_tests:
+    runs-on: ubuntu-22.04
+    needs: [load_balance]
+    strategy:
+      fail-fast: false
+      matrix:
+        cypressLoadBalancerSpecs: ${{ fromJson(needs.get_specs.outputs.cypressLoadBalancerSpecs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Cypress run tests
+        uses: cypress-io/github-action@v6
+        with:
+          browser: electron
+          build: npm run build
+          spec: ${{ matrix.cypressLoadBalancerSpecs }}
+          component: ${{ inputs.testing-type == 'component' }}
+          # Fix for https://github.com/cypress-io/github-action/issues/480
+          config: videosFolder=/tmp/cypress-videos
+
+      - name: Upload artifact for temporary spec map results
+        uses: ./actions/save-temporary-spec-map
+
+  merge_and_upload_spec_map:
+    runs-on: ubuntu-22.04
+    needs: [run_tests]
+    steps:
+      - name: Merge and upload temporary spec maps to cached spec map on head (source) branch
+        uses: /actions/merge
