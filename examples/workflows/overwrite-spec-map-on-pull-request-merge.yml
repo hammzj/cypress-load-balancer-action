@@ -1,0 +1,28 @@
+# See https://github.com/brennerm/github-actions-pr-close-showcase/
+name: Save load balancing map from head branch to base branch on pull request merge
+on:
+  pull_request:
+    types: [closed]
+
+env:
+  cross-workflow-file: "YOUR_WORKFLOW_FILE_THAT_RUNS_TESTS_ON_PULL_REQUESTS"
+
+jobs:
+  save:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo PR #${{ github.event.number }} has been merged
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Merge head branch spec-map to base branch spec-map, and save it in cache on base branch
+        uses: ./actions/overwrite-map-on-base-branch
+        with:
+          cross-workflow-file: ${{ env.cross-workflow-file }}
