@@ -81,7 +81,3 @@ runs:
       id: cypress-load-balancer
       run: node ./dist/src/balance.js
       shell: bash
-      with:
-        runners: ${{ inputs.runners }}
-        testing-type: ${{ inputs.testing-type }}
-        format: ${{inputs.format}}
