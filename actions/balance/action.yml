@@ -60,5 +60,4 @@ outputs:
 
 runs:
   using: node16
-  #main: "../../dist/balance/index.js"
-  main: index.js
+  main: "../../dist/balance/index.js"
