@@ -9,8 +9,6 @@ description: |
   the user to explicitly name which files to use for performing load balancing.
 
 inputs:
-  cypress-config-file:
-    description: If not providing file paths, you must declare the path to the Cypress configuration file
   runners:
     required: true
     description: The count of runners to use for load balancing
