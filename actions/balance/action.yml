@@ -60,24 +60,26 @@ outputs:
     value: ${{ steps.cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
 
 runs:
-  using: "composite"
-  steps:
-    - uses: actions/checkout@v4
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20.18.x
-
-    - name: Restore cached load balancing map
-      id: cache-restore-load-balancing-map
-      uses: actions/cache/restore@v4
-      with:
-        fail-on-cache-miss: false
-        path: .cypress_load_balancer/spec-map.json
-        key: ${{ inputs.cache-primary-key }}
-        restore-keys: ${{ inputs.cache-restore-keys }}
-
-    - name: Perform load balancing for ${{ inputs.testing-type }} tests
-      id: cypress-load-balancer
-      run: node ./dist/src/balance.js
-      shell: bash
+  using: node20
+  main: "../dist/src/balance.js"
+#  using: "composite"
+#  steps:
+#    - uses: actions/checkout@v4
+#
+#    - uses: actions/setup-node@v4
+#      with:
+#        node-version: 20.18.x
+#
+#    - name: Restore cached load balancing map
+#      id: cache-restore-load-balancing-map
+#      uses: actions/cache/restore@v4
+#      with:
+#        fail-on-cache-miss: false
+#        path: .cypress_load_balancer/spec-map.json
+#        key: ${{ inputs.cache-primary-key }}
+#        restore-keys: ${{ inputs.cache-restore-keys }}
+#
+#    - name: Perform load balancing for ${{ inputs.testing-type }} tests
+#      id: cypress-load-balancer
+#      run: node ./dist/src/balance.js
+#      shell: bash

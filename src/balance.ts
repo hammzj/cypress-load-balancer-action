@@ -1,10 +1,22 @@
 import * as core from "@actions/core";
+import * as cache from "@actions/cache";
 import { cli } from "cypress-load-balancer";
 import { getInputAsArray, getInputAsInt } from "./utils/input";
+import { SPEC_MAP_PATH } from "./constants";
+
+async function restorCachedLoadBalancingMap() {
+  try {
+    const cachePrimaryKey = core.getInput("cache-primary-key");
+    const cacheRestoreKeys = getInputAsArray("cache-restore-keys");
+    await cache.restoreCache([SPEC_MAP_PATH], cachePrimaryKey, cacheRestoreKeys);
+    //@ts-expect-error Ignore
+  } catch (error: Error) {
+    core.error(error);
+  }
+}
 
 function getArgv(): string[] {
-  //For cli
-  const runners = getInputAsInt(core.getInput("runners"));
+  const runners = getInputAsInt("runners");
   if (runners == null) throw Error('The input for "runners" must be defined as an integer');
 
   const testingType = core.getInput("testing-type");
@@ -24,8 +36,9 @@ function getArgv(): string[] {
   return argv;
 }
 
-function main() {
+async function main() {
   try {
+    await restorCachedLoadBalancingMap();
     const argv = getArgv();
     cli.parseSync(argv);
     //@ts-expect-error Ignore
