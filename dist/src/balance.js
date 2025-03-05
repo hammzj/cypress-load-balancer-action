@@ -38,7 +38,7 @@ const cache = __importStar(require("@actions/cache"));
 const cypress_load_balancer_1 = require("cypress-load-balancer");
 const input_1 = require("./utils/input");
 const constants_1 = require("./constants");
-async function restorCachedLoadBalancingMap() {
+async function restoreCachedLoadBalancingMap() {
     try {
         const cachePrimaryKey = core.getInput("cache-primary-key");
         const cacheRestoreKeys = (0, input_1.getInputAsArray)("cache-restore-keys");
@@ -68,7 +68,7 @@ function getArgv() {
 }
 async function main() {
     try {
-        await restorCachedLoadBalancingMap();
+        await restoreCachedLoadBalancingMap();
         const argv = getArgv();
         cypress_load_balancer_1.cli.parseSync(argv);
         //@ts-expect-error Ignore
