@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import { cli } from "cypress-load-balancer";
-import { getInputAsArray, getInputAsInt } from "./utils/input";
-import { SPEC_MAP_PATH } from "./constants";
+import { getInputAsArray, getInputAsInt } from "../../src/utils/input";
+import { SPEC_MAP_PATH } from "../../src/constants";
 
 async function restoreCachedLoadBalancingMap() {
   try {

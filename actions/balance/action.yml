@@ -61,4 +61,4 @@ outputs:
 
 runs:
   using: node20
-  main: "../../dist/src/balance.js"
+  main: "../../dist/balance/index.js"
