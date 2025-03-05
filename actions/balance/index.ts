@@ -17,6 +17,8 @@ async function restoreCachedLoadBalancingMap() {
 
 function getArgv(): string[] {
   const runners = getInputAsInt("runners");
+  const cypressConfigFile = core.getInput("cypress-config-file");
+  process.env.CYPRESS_CONFIG_FILE = process.env.CYPRESS_CONFIG_FILE || cypressConfigFile;
   if (runners == null) throw Error('The input for "runners" must be defined as an integer');
 
   const testingType = core.getInput("testing-type");
