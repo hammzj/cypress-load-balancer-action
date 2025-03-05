@@ -1,0 +1,1 @@
+ncc build ./actions/balance/index.js -o dist/balance --license licenses.txt
