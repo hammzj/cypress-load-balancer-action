@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "ncc build actions/balance/index.js -o dist/balance --license licenses.txt",
+    "build": "ncc build actions/balance/index.ts -o dist/balance --license licenses.txt",
     "dev:check": "tsc -p tsconfig.json --noEmit",
     "dev:check:tests": "tsc -p tsconfig.test.json --noEmit",
     "dev:format": "prettier --write . && prettier --write \"./actions/**/*.yml\"",
