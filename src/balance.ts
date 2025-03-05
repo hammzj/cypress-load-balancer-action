@@ -4,7 +4,7 @@ import { cli } from "cypress-load-balancer";
 import { getInputAsArray, getInputAsInt } from "./utils/input";
 import { SPEC_MAP_PATH } from "./constants";
 
-async function restorCachedLoadBalancingMap() {
+async function restoreCachedLoadBalancingMap() {
   try {
     const cachePrimaryKey = core.getInput("cache-primary-key");
     const cacheRestoreKeys = getInputAsArray("cache-restore-keys");
@@ -38,7 +38,7 @@ function getArgv(): string[] {
 
 async function main() {
   try {
-    await restorCachedLoadBalancingMap();
+    await restoreCachedLoadBalancingMap();
     const argv = getArgv();
     cli.parseSync(argv);
     //@ts-expect-error Ignore
