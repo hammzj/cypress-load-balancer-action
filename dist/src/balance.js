@@ -34,11 +34,23 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
+const cache = __importStar(require("@actions/cache"));
 const cypress_load_balancer_1 = require("cypress-load-balancer");
 const input_1 = require("./utils/input");
+const constants_1 = require("./constants");
+async function restorCachedLoadBalancingMap() {
+    try {
+        const cachePrimaryKey = core.getInput("cache-primary-key");
+        const cacheRestoreKeys = (0, input_1.getInputAsArray)("cache-restore-keys");
+        await cache.restoreCache([constants_1.SPEC_MAP_PATH], cachePrimaryKey, cacheRestoreKeys);
+        //@ts-expect-error Ignore
+    }
+    catch (error) {
+        core.error(error);
+    }
+}
 function getArgv() {
-    //For cli
-    const runners = (0, input_1.getInputAsInt)(core.getInput("runners"));
+    const runners = (0, input_1.getInputAsInt)("runners");
     if (runners == null)
         throw Error('The input for "runners" must be defined as an integer');
     const testingType = core.getInput("testing-type");
@@ -54,8 +66,9 @@ function getArgv() {
     argv.push(...globs.map((g) => [`--glob`, g]).flat());
     return argv;
 }
-function main() {
+async function main() {
     try {
+        await restorCachedLoadBalancingMap();
         const argv = getArgv();
         cypress_load_balancer_1.cli.parseSync(argv);
         //@ts-expect-error Ignore
