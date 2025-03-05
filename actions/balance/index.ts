@@ -38,10 +38,6 @@ async function main() {
   try {
     await restoreCachedLoadBalancingMap();
     const argv = getArgv();
-
-    //THIS SHOULD FAIL
-    console.log(getSpecs(undefined, 'e2e'))
-
     cli.parseSync(argv);
     //@ts-expect-error Ignore
   } catch (error: Error) {
