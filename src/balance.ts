@@ -9,21 +9,18 @@ function getArgv(): string[] {
 
   const testingType = core.getInput("testing-type");
   const format = core.getInput("format");
-  const coreFilePaths: string = core.getInput("file-paths");
-  let filePaths: string[] = [];
+  const coreFilePaths: string[] = getInputAsArray("file-paths", { trimWhitespace: true });
+  const globs: string[] = getInputAsArray("glob");
 
-  if (coreFilePaths.length > 0) {
-    filePaths.push(
-      ...getInputAsArray("file-paths", { trimWhitespace: true })
-        .map((fileName: string) => [`--files`, fileName])
-        .flat()
-    );
-  }
+  const filePaths: string[] = [];
+  filePaths.push(...coreFilePaths.map((fileName: string) => [`--files`, fileName]).flat());
+
   const argv = [`--runners`, runners.toString(), "--testing-type", testingType, `--gha`];
+
   if (format) argv.push(`--format`, format);
-  if (filePaths.length > 0) {
-    argv.push(...filePaths);
-  }
+  argv.push(...filePaths);
+  argv.push(...globs.map((g) => [`--glob`, g]).flat());
+
   return argv;
 }
 
@@ -31,8 +28,9 @@ function main() {
   try {
     const argv = getArgv();
     cli.parseSync(argv);
-  } catch (error) {
-    core.setFailed((error as any).stack);
+    //@ts-expect-error Ignore
+  } catch (error: Error) {
+    core.setFailed(error.stack);
   }
 }
 

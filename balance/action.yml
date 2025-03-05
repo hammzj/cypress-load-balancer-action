@@ -1,5 +1,12 @@
 name: Cypress Load Balancer - Balance
-description: Performs load balancing against Cypress tests
+description: |
+  Performs load balancing against Cypress tests.
+
+  Defaults to using the Cypress configuration file at the root of the directory unless specified
+  as an environment variable of `CYPRESS_CONFIG_FILE`.
+
+  This can also be overridden with options of either `file-paths` or `glob`, which allow
+  the user to explicitly name which files to use for performing load balancing.
 
 inputs:
   runners:
@@ -23,6 +30,10 @@ inputs:
     required: false
     description: |
       A multi-line string or comma delimited list of files against which to perform load balancing. If not given, the Cypress configuration will be used instead
+  glob:
+    required: false
+    description: |
+      A multi-line string of glob patterns to use to match spec file names.
   cache-primary-key:
     description: |
       The exact cache key to use for saving the load balancer map. Can be customized to fit your use cases.
