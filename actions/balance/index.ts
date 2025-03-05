@@ -3,7 +3,6 @@ import * as cache from "@actions/cache";
 import { cli } from "cypress-load-balancer";
 import { getInputAsArray, getInputAsInt } from "../../src/utils/input";
 import { SPEC_MAP_PATH } from "../../src/constants";
-import path from "path";
 
 async function restoreCachedLoadBalancingMap() {
   try {
@@ -37,7 +36,6 @@ function getArgv(): string[] {
 async function main() {
   try {
     await restoreCachedLoadBalancingMap();
-    console.log('WHAT IS THIS', path.join(process.cwd(), process.env.CYPRESS_CONFIG_FILE || ''))
     const argv = getArgv();
     cli.parseSync(argv);
     //@ts-expect-error Ignore

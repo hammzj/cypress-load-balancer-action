@@ -1,0 +1,23 @@
+{
+  "name": "cypress-load-balancer-action-balance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hammzj/cypress-load-balancer-action.git"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@actions/cache": "^4.0.2",
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "cypress-load-balancer": "^0.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "private": false
+}
