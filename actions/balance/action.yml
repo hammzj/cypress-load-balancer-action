@@ -59,6 +59,6 @@ outputs:
     description: A list of Cypress specs balanced out per runner
 
 runs:
-  using: node20
+  using: node16
   #main: "../../dist/balance/index.js"
   main: index.js
