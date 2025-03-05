@@ -3,6 +3,7 @@ import cache from "@actions/cache";
 import { cli } from "cypress-load-balancer";
 import { SPEC_MAP_PATH } from "../../src/constants";
 import { getInputAsArray, getInputAsInt } from "../../src/utils/input";
+//@ts-expect-error Types do not exist
 import {getSpecs} from 'find-cypress-specs'
 async function restoreCachedLoadBalancingMap() {
   try {
