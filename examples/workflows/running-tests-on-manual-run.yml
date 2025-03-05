@@ -61,7 +61,7 @@ jobs:
           config: videosFolder=/tmp/cypress-videos
 
       - name: Upload artifact for temporary spec map results
-        uses: ./actions/save-temporary-spec-map
+        uses: ./actions/save-temporary
 
   merge_and_upload_spec_map:
     runs-on: ubuntu-22.04
