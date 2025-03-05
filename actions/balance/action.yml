@@ -57,24 +57,7 @@ inputs:
 outputs:
   cypressLoadBalancerSpecs:
     description: A list of Cypress specs balanced out per runner
-    #value: ${{ steps.cypress-load-balancer.outputs.cypressLoadBalancerSpecs }}
 
 runs:
-#  using: node20
-#  main: "../../dist/balance/index.js"
-  using: composite
-  steps:
-    - name: Get cached load-balancing map
-      id: cache-restore-load-balancing-map
-      uses: actions/cache/restore@v4
-      with:
-        fail-on-cache-miss: false
-        path: .cypress_load_balancer/spec-map.json
-        key: ${{ inputs.cache-primary-key}}
-        # Restore keys:
-        ## 1. Same key from previous workflow run
-        ## 2. Key from pull request base branch most recent workflow. Used for the "base" map, if one exists
-        restore-keys: ${{ inputs.cache-restore-keys}}
-
-    - run: npx cypress-load-balancer -r ${{ inputs.runners }} -t ${{ inputs.testing-type }} --fm ${{ inputs.format }}
-      shell: bash
+  using: node20
+  main: "../../dist/balance/index.js"

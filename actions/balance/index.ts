@@ -16,11 +16,8 @@ async function restoreCachedLoadBalancingMap() {
 }
 
 function getArgv(): string[] {
-  const runners = getInputAsInt("runners");
-  console.log('CYPRESS_CONFIG_FILE?', process.env.CYPRESS_CONFIG_FILE)
-  if (runners == null) throw Error('The input for "runners" must be defined as an integer');
-
-  const testingType = core.getInput("testing-type");
+  const runners = getInputAsInt("runners", { required: true });
+  const testingType = core.getInput("testing-type", { required: true });
   const format = core.getInput("format");
   const coreFilePaths: string[] = getInputAsArray("file-paths", { trimWhitespace: true });
   const globs: string[] = getInputAsArray("glob");
@@ -28,8 +25,7 @@ function getArgv(): string[] {
   const filePaths: string[] = [];
   filePaths.push(...coreFilePaths.map((fileName: string) => [`--files`, fileName]).flat());
 
-  const argv = [`--runners`, runners.toString(), "--testing-type", testingType, `--gha`];
-
+  const argv = [`--runners`, (runners as number).toString(), "--testing-type", testingType, `--gha`];
   if (format) argv.push(`--format`, format);
   argv.push(...filePaths);
   argv.push(...globs.map((g) => [`--glob`, g]).flat());
