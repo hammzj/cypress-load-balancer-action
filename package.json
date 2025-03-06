@@ -2,7 +2,7 @@
   "name": "cypress-load-balancer-action",
   "version": "1.0.0",
   "description": "A multi-purpose GitHub Action for running the cypress-load-balancer script.",
-  "type": "module",
+  "type": "commonjs",
   "repository": "https://github.com/hammzj/cypress-load-balancer-action.git",
   "author": "Zachary Hamm <zjhamm304@gmail.com>",
   "license": "MIT",
