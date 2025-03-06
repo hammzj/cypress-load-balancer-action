@@ -74,5 +74,6 @@ runs:
 #      run: node ./actions/balance/balance.js
 #      shell: bash
   using: node20
-  main: "../../dist/actions/balance/index.js"
+  main: "actions/balance.js"
+  #main: "../../dist/actions/balance/index.js"
 
