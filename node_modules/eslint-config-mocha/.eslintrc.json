@@ -1,0 +1,27 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "extends": [
+    "standard"
+  ],
+  "rules": {
+    "arrow-parens": [
+      "warn",
+      "as-needed"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "no-extra-semi": "error",
+    "semi-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ]
+  }
+}
