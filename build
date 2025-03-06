@@ -1,1 +1,1 @@
-ncc build ./actions/balance/index.ts -o dist/actions/balance --license licenses.txt --minify
+ncc build ./actions/balance/balance.js -o dist/actions/balance --license licenses.txt --minify
