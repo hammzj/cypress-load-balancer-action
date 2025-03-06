@@ -59,11 +59,5 @@ outputs:
     description: A list of Cypress specs balanced out per runner
 
 runs:
-  using: composite
-  steps:
-    - run: yarn install
-      shell: bash
-    - run: "node dist/src/balance.js"
-      shell: bash
-  #using: node20
-  #main: "../../dist/balance/index.js"
+  using: node20
+  main: "../../dist/actions/balance/index.js"
