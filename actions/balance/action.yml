@@ -59,7 +59,7 @@ outputs:
     description: A list of Cypress specs balanced out per runner
 
 runs:
- using: composite
+  using: composite
 
   steps:
     - uses: actions/setup-node@v3.6.0
