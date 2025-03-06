@@ -67,7 +67,7 @@ runs:
         node-version: 20
 
     - name: Install Dependencies
-      run: yarn ci
+      run: yarn install
       shell: bash
 
     - name: Performing Shared Action
