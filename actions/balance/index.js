@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const core = require("@actions/core");
 const cache = require("@actions/cache");
 const { cli } = require("cypress-load-balancer");
