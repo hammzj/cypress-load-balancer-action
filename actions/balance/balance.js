@@ -3,7 +3,7 @@ const cache = require("@actions/cache");
 const { cli } = require("cypress-load-balancer");
 const { SPEC_MAP_PATH } = require("../../src/constants");
 const { getInputAsArray, getInputAsInt } = require("../../src/utils/input");
-
+const {getSpecs} = require('find-cypress-specs')
 async function restoreCachedLoadBalancingMap() {
   try {
     const cachePrimaryKey = core.getInput("cache-primary-key");
@@ -34,6 +34,7 @@ function getArgv() {
 
 async function main() {
   try {
+    getSpecs(undefined, 'e2e')
     await restoreCachedLoadBalancingMap();
     const argv = getArgv();
     cli.parseSync(argv);
