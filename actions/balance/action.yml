@@ -59,13 +59,13 @@ outputs:
     description: A list of Cypress specs balanced out per runner
 
 runs:
-  using: composite
-  steps:
-    - run: npm install
-    #- run: npm ci
-      shell: bash
-    #- run: node dist/actions/balance/index.js
-    - run: node actions/balance/index.js
-      shell: bash
-  #using: node 20
-  #main: "dist/actions/balance/index.js"
+  #using: composite
+  #steps:
+#    - run: npm install
+#    #- run: npm ci
+#      shell: bash
+#    #- run: node dist/actions/balance/index.js
+#    - run: node actions/balance/index.js
+#      shell: bash
+  using: node 20
+  main: "actions/balance/index.js"
