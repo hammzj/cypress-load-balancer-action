@@ -19,6 +19,7 @@
     "@actions/cache": "^4.0.2",
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
+    "cypress": "^14.1.0",
     "cypress-load-balancer": "^0.0.4"
   },
   "devDependencies": {
