@@ -11,7 +11,7 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {},
-    "types": ["chai", "chai-string", "mocha", "node", "sinon", "sinon-chai"],
+//    "types": ["chai", "chai-string", "mocha", "node", "sinon", "sinon-chai"],
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": false,

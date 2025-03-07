@@ -15,12 +15,6 @@
     "dev:lint": "eslint . && prettier --check . && prettier --check \"./actions/**/*.yml\"",
     "test:mocha": "mocha"
   },
-  "dependencies": {
-    "@actions/cache": "^4.0.2",
-    "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.0",
-    "cypress-load-balancer": "^0.0.5"
-  },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "@types/chai": "^5.0.1",
