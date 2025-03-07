@@ -61,7 +61,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - run: npm ci
+    - run: npm install
+    #- run: npm ci
       shell: bash
     - run: node dist/actions/balance/index.js
       shell: bash
