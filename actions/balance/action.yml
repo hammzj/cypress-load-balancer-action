@@ -60,7 +60,7 @@ outputs:
 
 runs:
   using: node20
-  main: "actions/balance/index.js"
+  main: "index.js"
   #using: composite
   #steps:
 #    - run: npm install
