@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./dist/ && tsc",
     "dev:check": "tsc -p tsconfig.json --noEmit",
     "dev:check:tests": "tsc -p tsconfig.test.json --noEmit",
     "dev:format": "prettier --write . && prettier --write \"./actions/**/*.yml\"",

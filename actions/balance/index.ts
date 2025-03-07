@@ -1,22 +1,21 @@
-#!/usr/bin/env node
-
-const core = require("@actions/core");
-const cache = require("@actions/cache");
-const { cli } = require("cypress-load-balancer");
-const { SPEC_MAP_PATH } = require("../../src/constants");
-const { getInputAsArray, getInputAsInt } = require("../../src/utils/input");
+import * as core from "@actions/core";
+import * as cache from "@actions/cache";
+import { cli } from "cypress-load-balancer";
+import { SPEC_MAP_PATH } from "../../src/constants";
+import { getInputAsArray, getInputAsInt } from "../../src/utils/input";
 
 async function restoreCachedLoadBalancingMap() {
   try {
     const cachePrimaryKey = core.getInput("cache-primary-key");
     const cacheRestoreKeys = getInputAsArray("cache-restore-keys");
     await cache.restoreCache([SPEC_MAP_PATH], cachePrimaryKey, cacheRestoreKeys);
-  } catch (error) {
+    //@ts-expect-error Ignore
+  } catch (error: Error) {
     core.error(error);
   }
 }
 
-function getArgv() {
+function getArgv(): string[] {
   const runners = getInputAsInt("runners", { required: true });
   const testingType = core.getInput("testing-type", { required: true });
   const format = core.getInput("format");
@@ -26,7 +25,7 @@ function getArgv() {
   const filePaths = [];
   filePaths.push(...coreFilePaths.map((fileName) => [`--files`, fileName]).flat());
 
-  const argv = [`--runners`, runners.toString(), "--testing-type", testingType, `--gha`];
+  const argv = [`--runners`, (runners as number).toString(), "--testing-type", testingType, `--gha`];
 
   if (format) argv.push(`--format`, format);
   argv.push(...filePaths);
@@ -40,7 +39,8 @@ async function main() {
     await restoreCachedLoadBalancingMap();
     const argv = getArgv();
     cli.parseSync(argv);
-  } catch (error) {
+    //@ts-expect-error Ignore
+  } catch (error: Error) {
     core.setFailed(error.stack);
   }
 }
