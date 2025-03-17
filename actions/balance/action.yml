@@ -60,7 +60,7 @@ outputs:
 
 runs:
   using: node20
-  main: "actions/balance/dist/index.js"
+  main: "dist/index.js"
 #  using: composite
 #  steps:
 #    - run: npm ci
