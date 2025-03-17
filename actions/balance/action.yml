@@ -65,7 +65,7 @@ runs:
   steps:
     - run: npm ci
       shell: bash
-      working-directory: actions/balance
+      #working-directory: actions/balance
    # - run: npm ci
    #   shell: bash
     #- run: node dist/actions/balance/index.js
