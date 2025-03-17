@@ -1,8 +1,30 @@
 const core = require("@actions/core");
 const cache = require("@actions/cache");
 const { cli } = require("cypress-load-balancer");
-const { SPEC_MAP_PATH } = require("../../src/constants");
-const { getInputAsArray, getInputAsInt } = require("../../src/utils/input");
+// const { SPEC_MAP_PATH } = require("../../src/constants");
+// const { getInputAsArray, getInputAsInt } = require("../../src/utils/input");
+const SPEC_MAP_PATH = ".cypress_load_balancer/spec-map.json";
+
+function getInputAsArray(name, options) {
+  return core
+    .getInput(name, options)
+    .split("\n")
+    .map((s) => s.replace(/^!\s+/, "!").trim())
+    .filter((x) => x !== "");
+}
+
+function getInputAsInt(name, options) {
+  const value = parseInt(core.getInput(name, options));
+  if (isNaN(value) || value < 0) {
+    return undefined;
+  }
+  return value;
+}
+
+function getInputAsBool(name, options) {
+  const result = core.getInput(name, options);
+  return result.toLowerCase() === "true";
+}
 
 async function restoreCachedLoadBalancingMap() {
   try {
