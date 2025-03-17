@@ -63,10 +63,11 @@ runs:
   #main: "index.js"
   using: composite
   steps:
-   # - run: npm install
-   #   shell: bash
     - run: npm ci
       shell: bash
+      working-directory: actions/balance
+   # - run: npm ci
+   #   shell: bash
     #- run: node dist/actions/balance/index.js
 #    - run: node actions/balance/index.js
 #      shell: bash
