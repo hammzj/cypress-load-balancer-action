@@ -59,8 +59,10 @@ outputs:
     description: A list of Cypress specs balanced out per runner
 
 runs:
-  using: node20
-  main: "index.js"
+  using: 'docker'
+  image: 'Dockerfile'
+#  using: node20
+#  main: "index.js"
   #using: composite
   #steps:
 #    - run: npm install
