@@ -1,8 +1,32 @@
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import { cli } from "cypress-load-balancer";
-import { SPEC_MAP_PATH } from "../../src/constants";
-import { getInputAsArray, getInputAsInt } from "../../src/utils/input";
+
+//Literally copied from https://github.com/actions/cache/blob/main/src/utils/actionUtils.ts
+
+function getInputAsArray(name: string, options?: core.InputOptions): string[] {
+  return core
+    .getInput(name, options)
+    .split("\n")
+    .map((s) => s.replace(/^!\s+/, "!").trim())
+    .filter((x) => x !== "");
+}
+
+function getInputAsInt(name: string, options?: core.InputOptions): number | undefined {
+  const value = parseInt(core.getInput(name, options));
+  if (isNaN(value) || value < 0) {
+    return undefined;
+  }
+  return value;
+}
+
+//@ts-expect-error Ignore
+function getInputAsBool(name: string, options?: core.InputOptions): boolean {
+  const result = core.getInput(name, options);
+  return result.toLowerCase() === "true";
+}
+
+const SPEC_MAP_PATH = ".cypress_load_balancer/spec-map.json";
 
 async function restoreCachedLoadBalancingMap() {
   try {
