@@ -1,7 +1,5 @@
 #name: Tests
-#on:
-#  pull_request:
-#
+
 #jobs:
 #  mocha:
 #    name: Unit tests
@@ -17,6 +15,9 @@
 #          yarn run mocha
 
 name: 'Trying something out'
+on:
+  pull_request:
+
 env:
   PERSON_TO_GREET: 'Leon S. Kennedy'
 
