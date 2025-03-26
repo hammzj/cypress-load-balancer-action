@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "module": "commonjs",
-    "target": "ESNext",
+    "target": "es2015",
     "rootDir": "./",
     "outDir": "./dist",
     "noEmit": false,
@@ -11,7 +11,7 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {},
-    "types": ["chai", "chai-string", "mocha", "node", "sinon", "sinon-chai"],
+//    "types": ["chai", "chai-string", "mocha", "node", "sinon", "sinon-chai"],
     "resolveJsonModule": true,
     "allowJs": true,
     "checkJs": false,
@@ -27,5 +27,5 @@
     "skipDefaultLibCheck": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "actions/**/*.ts"]
 }

@@ -1,0 +1,29 @@
+name: TypeScript checking and linting
+on:
+  pull_request:
+
+jobs:
+  tsc:
+    name: TypeScript Checking
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: |
+          yarn install
+          yarn run dev:check
+          yarn run dev:check:tests
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: |
+          yarn install
+          yarn run dev:lint

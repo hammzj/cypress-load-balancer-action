@@ -1,0 +1,26 @@
+{
+  "name": "cypress-load-balancer-action",
+  "version": "1.0.0",
+  "description": "A multi-purpose GitHub Action for running the cypress-load-balancer script.",
+  "repository": "https://github.com/hammzj/cypress-load-balancer-action.git",
+  "author": "Zachary Hamm <zjhamm304@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "build": "rm -rf ./dist/ && tsc",
+    "ncc": "ncc build index.ts"
+  },
+  "dependencies": {
+    "@actions/cache": "^4.0.2",
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "cypress-load-balancer": "^0.0.5",
+    "fast-glob": "^3.3.3"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.3",
+    "@types/node": "^20.17.24",
+    "typescript": "^5.8.2",
+    "esbuild-loader": "^4.3.0"
+  }
+}
