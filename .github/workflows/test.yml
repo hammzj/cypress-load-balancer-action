@@ -15,3 +15,13 @@
 #          yarn install
 #          yarn run build
 #          yarn run mocha
+
+name: 'Trying something out'
+env:
+  PERSON_TO_GREET: 'Leon S. Kennedy'
+
+jobs:
+  hello-world:
+  runs-on: ubuntu-latest
+  steps:
+    - run: node script.js
