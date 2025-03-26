@@ -23,6 +23,6 @@ env:
 
 jobs:
   hello-world:
-  runs-on: ubuntu-latest
-  steps:
-    - run: node script.js
+    runs-on: ubuntu-latest
+    steps:
+      - run: node script.js
